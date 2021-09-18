@@ -1,0 +1,17 @@
+{% extends '_base.html'%}
+{% set text = "Already have an account?"%}
+{% set page = "Log in" %}
+{% set description = "Sign up" %}
+{% block content %}
+<nav class='input-index'>
+  <nav class='fnln'>
+    <input type="text" placeholder="First name" id='firstname'>
+    <input type="text" placeholder="Last name">
+  </nav>
+  <input type="text" placeholder="Username">
+  <input type="text" placeholder="E-mail">
+</nav>
+<nav class='button'>
+  <button class='sign-in'>Get started</button>
+</nav>
+{% endblock %}
