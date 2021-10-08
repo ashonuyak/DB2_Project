@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DB2</title>
+  <link rel="stylesheet" href="./css/styles-profile.css">
+</head>
+<body>
+  <aside>
+    <img src="logo-mini.png" id="logo">
+    <nav class="icons">
+      <i class="fas fa-search"></i>
+      <i class="fas fa-user"></i>
+      <i class="fas fa-envelope"></i>
+      <i class="fas fa-calendar-alt"></i>
+    </nav>
+  </aside>
+  <div class="wrapper">
+    <header>
+      <p id="location">{{ location }}</p>
+      <p id="account-name">{{ account_name }}</p>
+    </header>
+    <div class="div-profile">
+      <form class="form-profile">
+        <nav class="nav-profile">
+          {% block content %}
+        
+          {% endblock %}
+        </nav>
+      </form>
+    </div>
+  </div>
+  
+</body>
+<script src="https://kit.fontawesome.com/4a93b75334.js" crossorigin="anonymous"></script>
+</html>

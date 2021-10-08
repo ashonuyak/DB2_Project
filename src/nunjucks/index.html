@@ -1,6 +1,7 @@
 {% extends '_base.html'%}
 {% set text = "Do not have an account?"%}
 {% set page = "Sign up" %}
+{% set href = "sign-up-1.html" %}
 {% set description = "Sign in" %}
 {% block content %}
   <nav class='input-index'>
@@ -8,7 +9,7 @@
     <input type="text" placeholder="Password">
   </nav>
   <nav class='button'>
-    <a href="forgot-password.html">Forgot password?</a>
+    <a href="forgot-password.html" class="link-form">Forgot password?</a>
     <button class='sign-in'>Sign in</button>
   </nav>
 {% endblock %}
