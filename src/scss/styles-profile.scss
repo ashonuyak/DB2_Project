@@ -32,7 +32,7 @@ aside {
       font-size: 25px;
       color: rgb(110, 110, 110);
     }
-    i:hover{
+    i:hover {
       color: white;
     }
   }
@@ -49,8 +49,8 @@ aside {
     justify-content: space-between;
     background-color: white;
     padding: 4.6px;
-    p{
-      font-family: "Roboto",sans-serif;
+    p {
+      font-family: "Roboto", sans-serif;
     }
   }
 
@@ -69,20 +69,21 @@ aside {
         display: flex;
         flex-direction: column;
         height: 550px;
-        p, a{
-          font-family: "Roboto",sans-serif;
+        p,
+        a {
+          font-family: "Roboto", sans-serif;
         }
         .header-profile {
           display: flex;
           align-items: center;
           justify-content: space-around;
           margin-top: 30px;
-          p{
+          p {
             font-weight: 700;
           }
           a {
             text-decoration: none;
-            font-family: "Roboto",sans-serif;
+            font-family: "Roboto", sans-serif;
             font-weight: 700;
             color: rgb(173, 170, 170);
           }
@@ -92,26 +93,66 @@ aside {
             border-bottom-color: rgba(208, 64, 0, 0.2);
           }
         }
-        .line{
+        .line {
           height: 3px;
           margin-bottom: 50px;
           display: flex;
-          #line1{
+          #line1 {
             background-color: black;
             width: 500px;
             color: white;
           }
-          #line2{
+          #line2 {
             background-color: rgb(173, 170, 170);
             width: 500px;
             color: white;
           }
         }
+        .inputs {
+          display: flex;
+          flex-direction: row;
+          // justify-content: space-around;
+          .comb1,
+          .comb2 {
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            margin-right: 8%;
+            input {
+              margin-bottom: 20px;
+              border-radius: 5px;
+              border: 3px solid rgb(167, 161, 161);
+              height: 35px;
+              font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS",
+                sans-serif;
+              font-size: 18px;
+              width: 300px;
+            }
+            p {
+              font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS",
+                sans-serif;
+              font-size: 16px;
+              margin-bottom: 10px;
+            }
+            a{
+              display: flex;
+              justify-content: end;
+            }
+            input:hover {
+              box-shadow: 0 0 15px 4px rgba(0, 0, 0, 0.06);
+            }
+            input:focus {
+              border-left-color: blue;
+              border-width: 3px;
+            }
+          }
+        }
+
         .cutform {
           display: flex;
           flex-direction: row;
           justify-content: space-between;
-          p{
+          p {
             font-size: 14px;
             margin-bottom: 3px;
           }
@@ -119,13 +160,13 @@ aside {
           .photo-profile {
             display: flex;
             flex-direction: column;
-            #together{
+            #together {
               display: flex;
               justify-content: center;
               width: 100%;
               a {
                 text-decoration: none;
-                font-family: "Roboto",sans-serif;
+                font-family: "Roboto", sans-serif;
                 font-weight: 500;
               }
               a:hover {
@@ -149,7 +190,8 @@ aside {
           }
           .inputs1,
           .inputs2 {
-            .inputpp1, .inputpp2{
+            .inputpp1,
+            .inputpp2 {
               margin-bottom: 20px;
             }
             nav {
@@ -176,4 +218,14 @@ aside {
       }
     }
   }
+}
+.link-form {
+  text-decoration: none;
+  font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
+  font-weight: 500;
+}
+.link-form:hover{
+  text-decoration: none;
+  color: #cf0000;
+  border-bottom-color: rgba(208, 64, 0, 0.2);
 }

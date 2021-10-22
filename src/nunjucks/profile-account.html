@@ -1,10 +1,16 @@
 {% extends '_base_profile.html'%}
+{% set location="Home > My profile" %}
+{% set account_name="Volodya" %}
 {% block content %}
 <nav class="header-profile">
   <a href="profile-personal.html">PERSONAL INFORMATION</a>
   <p>ACCOUNT INFORMATION</p>  
 </nav>
-<form class="inputs">
+<nav class="line">
+  <div id="line2">icu</div>
+  <div id="line1">icu</div>
+</nav>
+<nav class="inputs">
   <nav class="comb1">
     <p>USERNAME</p>
     <input type="text">
@@ -12,7 +18,7 @@
   <nav class="comb2">
     <p>E-MAIL</p>
     <input type="text">
+    <a href="reset-password.html" class="link-form">CHANGE PASSWORD</a>
   </nav>
-</form>
-<a href="reset-password.html">CHANGE PASSWORD</a>
+</nav>
 {% endblock %}
