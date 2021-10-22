@@ -31,7 +31,7 @@ router.use('/', globalRouter.router.routes());
 app.use(router.routes());
 app.use(serve(path.join(__dirname, '/')));
 
-const PORT = 3000;
+const PORT = process.env.PORT | 3000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
