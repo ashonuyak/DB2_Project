@@ -1,16 +1,14 @@
-const Router = require("koa-router"),
-  {Controller} = require("./controller");
+const Router = require("koa-router");
+// const Router = require('koa-joi-router');
+const { Controller } = require("./controller");
 
 const router = new Router();
 
-router.get("home", Controller.profile);
-router.get("forgot-password", Controller.forgotPassword);
-router.get("check-email", Controller.checkEmail);
-router.get("signUpName", Controller.signUpName);
-router.get("signUpPassword", Controller.signUpPassword);
-router.get("resetPassword", Controller.resetPassword);
-router.get("profilePersonal", Controller.profilePersonal);
-router.get("profileAccount", Controller.profileAccount);
+router.get("/user/:id", Controller.getUser);
+router.post("/userCreate", Controller.userCreate);
+router.put("/userUpdate", Controller.userUpdate);
+router.get("/getAllUsers", Controller.getAllUsers);
+router.delete("/userDelete/:id", Controller.userDelete);
 
 module.exports = {
   router,

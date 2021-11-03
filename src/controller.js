@@ -1,72 +1,39 @@
+const db = require("./db/db"),
+  { User } = require("./models/User"),
+  { UserDB } = require("./models/UserDB"),
+  validator = require("./validator");
+
 class Controller {
-  static async profile(ctx) {
-    await ctx.render("index", {
-      text: "Do not have an account?",
-      page: "Sign up",
-      href: "signUpName",
-      description: "Sign in",
-    });
+  static async getUser(ctx) {
+    const { id } = ctx.request.params;
+    const result = await UserDB.get(id);
+    ctx.body = { ...result.rows[0] };
   }
 
-  static async forgotPassword(ctx) {
-    await ctx.render("forgot-password", {
-      text: "Back to",
-      href: "home",
-      page: "Sign in",
-      description: "Enter your e-mail to reset your password",
-    });
+  static async getAllUsers(ctx) {
+    const users = (await UserDB.getAll()).map((user) => user.getInfo());
+    ctx.body = { users };
   }
 
-  static async checkEmail(ctx) {
-    await ctx.render("check-email", {
-      text: "Back to",
-      href: "home",
-      page: "Sign in",
-      description: "You are almost ready to go!",
-    });
+  static async userCreate(ctx) {
+    const { fname, lname, username, email, password } = ctx.request.body;
+    await validator.userSchema.validateAsync({fname, lname});
+    await UserDB.create(fname, lname, username, email, password);
+    ctx.status = 201;
   }
 
-  static async signUpName(ctx) {
-    await ctx.render("sign-up-1", {
-      text: "Already have an account?",
-      href: "home",
-      page: "Log in",
-      description: "Sign up",
-    });
+  static async userUpdate(ctx) {
+    const { fname, lname, username, email, password, id } = ctx.request.body;
+    await UserDB.update(fname, lname, username, email, password, id);
+    ctx.status = 200;
   }
 
-  static async signUpPassword(ctx) {
-    await ctx.render("sign-up-2", {
-      text: "Already have an account?",
-      href: "home",
-      page: "Log in",
-      description: "Complete your account",
-    });
+  static async userDelete(ctx) {
+    const { id } = ctx.request.params;
+    console.log(ctx.request.params);
+    await UserDB.delete(id);
+    ctx.status = 200;
   }
-
-  static async resetPassword(ctx) {
-    await ctx.render("reset-password", {
-      text: "Do not have an account?",
-      href: "signUpName",
-      page: "Sign up",
-      description: "Reset your password",
-    });
-  }
-
-  static async profilePersonal(ctx) {
-    await ctx.render("profile-personal", {
-      location: "Home > My profile",
-      account_name: "Volodya",
-    });
-  }
-
-  static async profileAccount(ctx) {
-    await ctx.render("profile-account", {
-      location: "Home > My profile",
-      account_name: "Volodya",
-    });
-  }
-
 }
 
 module.exports = {
