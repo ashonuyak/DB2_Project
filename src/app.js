@@ -1,45 +1,41 @@
-const Koa = require("koa"),
-  path = require("path"),
-  Router = require("koa-router"),
-  views = require("koa-views"),
-  config = require("config"),
-  globalRouter = require("./router"),
-  serve = require("koa-static"),
-  nunjucks = require("nunjucks"),
-  bodyParser = require("koa-bodyparser");
+const Koa = require("koa");
+const config = require('config')
+const path = require("path");
+const Router = require("koa-router");
+const views = require("koa-views");
+const serve = require("koa-static");
+const bodyParser = require("koa-bodyparser");
+const cors = require("@koa/cors");
+const passport = require("./libs/passport/koaPassport");
+
+passport.initialize();
+
+const globalRouter = require("./user/router");
 
 const app = new Koa();
 
-const router = new Router();
-
-const nunjucksEnvironment = new nunjucks.Environment(
-  new nunjucks.FileSystemLoader(path.join(__dirname, "./nunjucks"))
-);
-
-const render = views(path.join(__dirname, "./nunjucks"), {
-  extension: "html",
-  options: {
-    nunjucksEnv: nunjucksEnvironment,
-  },
-  map: {
-    html: "nunjucks",
-  },
-});
-
-app.use(render);
+app.use(cors());
 
 app.use(bodyParser());
 
-// app.use(async (ctx, next) => {
-//   try {
-//     await next();
-//   } catch (err) {
-//     if (err.isJoi) {
-//       ctx.throw(400, err.details[0].message);
-//     }
-//     ctx.throw(400, "Something went wrong");
-//   }
-// });
+app.use(async (ctx, next) => {
+  try {
+    await next();
+  } catch (err) {
+    console.log(err);
+    if (err.isJoi) {
+      ctx.throw(400, err.details[0].message);
+    }
+    ctx.throw(400, err.message);
+    if (err.isPassport) {
+      ctx.throw(401, err.message);
+    }
+
+    ctx.throw(err.status || 500, err.message);
+  }
+});
+
+const router = new Router();
 
 router.use("", globalRouter.router.routes());
 

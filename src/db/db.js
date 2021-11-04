@@ -1,5 +1,5 @@
-const { Pool } = require("pg"),
-  conf = require("config");
+const { Pool } = require("pg");
+const conf = require("config");
 
 class Database {
   constructor() {

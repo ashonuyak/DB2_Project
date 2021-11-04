@@ -1,5 +1,5 @@
 START TRANSACTION;
-  CREATE TABLE "user" (
+  CREATE TABLE "user_table" (
       id serial PRIMARY KEY,
       fname varchar NOT NULL,
       lname varchar NOT NULL,
