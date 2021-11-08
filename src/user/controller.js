@@ -1,10 +1,13 @@
-const bcrypt = require("bcrypt");
-const passport = require("koa-passport");
 const jwt = require("jwt-simple");
-const { UserDB } = require("./models/UserDB");
+const passport = require("koa-passport");
+
 const validator = require("./validator");
+const { Service } = require("./service");
+const { SameEmailError } = require("./errors/SameEmailError");
 const { ChangePasswordError } = require("./errors/ChangePasswordError");
-const { Service } = require('./service')
+const {
+  RefreshTokenExpiredError,
+} = require("./errors/RefreshTokenExpiredError");
 
 class Controller {
   static async getUser(ctx) {
@@ -15,38 +18,27 @@ class Controller {
 
   static async refresh(ctx) {
     const token = ctx.headers.authorization.split(" ")[1];
-    const decodedToken = jwt.decode(token, "super_secret_refresh");
-
-    if (decodedToken.expiresIn <= new Date().getTime()) {
-      const error = new Error(
-        "Refresh token expired, please sign in into your account."
-      );
-      error.status = 400;
-
-      throw error;
+    try {
+      const { accessToken, refreshToken } = await Service.refresh(token);
+      ctx.status = 200;
+      ctx.body = {
+        accessToken: jwt.encode(accessToken, "super_secret"),
+        accessTokenExpirationDate: accessToken.expiresIn,
+        refreshToken: jwt.encode(refreshToken, "super_secret_refresh"),
+        refreshTokenExpirationDate: refreshToken.expiresIn,
+      };
+    } catch (err) {
+      if (err instanceof RefreshTokenExpiredError) {
+        ctx.status = 400;
+        ctx.body = {
+          message: err.message,
+        };
+      }
     }
-
-    const user = await UserDB.getUserByEmail(decodedToken.email);
-
-    const accessToken = {
-      id: user.id,
-      expiresIn: new Date().setTime(new Date().getTime() + 200000),
-    };
-    const refreshToken = {
-      email: user.email,
-      expiresIn: new Date().setTime(new Date().getTime() + 1000000),
-    };
-
-    ctx.body = {
-      accessToken: jwt.encode(accessToken, "super_secret"),
-      accessTokenExpirationDate: accessToken.expiresIn,
-      refreshToken: jwt.encode(refreshToken, "super_secret_refresh"),
-      refreshTokenExpirationDate: refreshToken.expiresIn,
-    };
   }
 
   static async getAllUsers(ctx) {
-    const users = (await UserDB.getAll()).map((user) => user.getInfo());
+    const users = await Service.getAllUsers();
     ctx.body = { users };
   }
 
@@ -59,15 +51,17 @@ class Controller {
       email,
       password,
     });
-    const passwordHash = await bcrypt.hash(password, 10);
-    await UserDB.create(fname, lname, username, email, passwordHash).catch(
-      (err) => {
-        if (err.constraint === "user_email")
-          throw new Error("User with the same email already exists");
-        throw new Error(err.message);
+    try {
+      await Service.userCreate(fname, lname, username, email, password);
+      ctx.status = 201;
+    } catch (err) {
+      if (err instanceof SameEmailError) {
+        ctx.status = 400;
+        ctx.body = {
+          message: err.message,
+        };
       }
-    );
-    ctx.status = 201;
+    }
   }
 
   static async userUpdate(ctx) {
@@ -79,26 +73,22 @@ class Controller {
       email,
       password,
     });
-    const passwordHash = await bcrypt.hash(password, 10);
-    await UserDB.update(
-      fname,
-      lname,
-      username,
-      email,
-      passwordHash,
-      ctx.state.user.id
-    ).catch((err) => {
-      if (err.constraint === "user_email")
-        throw new Error("User with the same email already exists");
-      throw new Error(err.message);
-    });
-    ctx.status = 200;
+    try {
+      await Service.userUpdate(fname, lname, username, email, password);
+      ctx.status = 200;
+    } catch (err) {
+      if (err instanceof SameEmailError) {
+        ctx.status = 400;
+        ctx.body = {
+          message: err.message,
+        };
+      }
+    }
   }
 
   static async userDelete(ctx) {
     const { id } = ctx.request.params;
-    console.log(ctx.request.params);
-    await UserDB.delete(id);
+    Service.userDelete(id);
     ctx.status = 200;
   }
 
@@ -106,14 +96,14 @@ class Controller {
     const { password, email } = ctx.request.body;
     await validator.passwordSchema.validateAsync({ password });
     try {
-      await Service.changePassword(password, email)
+      await Service.changePassword(password, email);
       ctx.status = 200;
     } catch (err) {
-      if(err instanceof ChangePasswordError) {
-        ctx.status = 400
-        ctx.body = { 
-          message: err.message
-        }
+      if (err instanceof ChangePasswordError) {
+        ctx.status = 400;
+        ctx.body = {
+          message: err.message,
+        };
       }
     }
   }

@@ -1,6 +1,6 @@
 const { User } = require("./User");
 const db = require("../../db/db");
-const crypto = require("crypto");
+const bcrypt = require("bcrypt");
 
 class UserDB {
   static async get(id) {
@@ -89,15 +89,12 @@ class UserDB {
         flag: false,
       };
     }
-
+    
     const user = { ...userResponse.rows[0] };
+    const check = await bcrypt.compare(password, user.password);
 
-    if (
-      crypto
-        .pbkdf2Sync(password, "salt", 100000, 64, "sha256")
-        .toString("hex") !== user.password
-    ) {
-      return { message: "Incorect password", flag: false };
+    if (!check) {
+      return { message: "Incorrect password", flag: false };
     }
     return { user, flag: true };
   }
@@ -114,7 +111,7 @@ class UserDB {
     SELECT password
     FROM user_table
     WHERE email='${email}'`);
-    return {...response.rows[0]};
+    return { ...response.rows[0] };
   }
 }
 
